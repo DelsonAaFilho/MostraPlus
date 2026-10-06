@@ -3,55 +3,56 @@ package com.example.a3work.Model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.type.SqlTypes;
+
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 
 @Entity
-@Table(name = "users")
+@Table(name = "projects")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class UsersModel {
 
-
+public class ProjectsModel {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
-    @Column(name = "name", nullable = false)
-    @JdbcTypeCode(SqlTypes.VARCHAR)
-    @NonNull
-    @NotEmpty
+    @Column(name="author_id", nullable = false)
     @NotBlank
-    private String name;
-
-    @Column(name = "email", nullable = false, unique = true)
-    @JdbcTypeCode(SqlTypes.LONGNVARCHAR)
-    @NonNull
     @NotEmpty
-    @NotBlank
-    private String email;
+    @NotNull
+    private String authorId;
 
-    @Column(name = "password", nullable = false)
-    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
-    @NonNull
+    @Column(name="professor_id", nullable = false)
+    @NotBlank
     @NotEmpty
-    @NotBlank
-    @Size(min = 8, max = 32)
-    private String password_hash;
+    @NotNull
+    private String professorId;
 
-    @Column(name = "role", nullable = false, length = 16)
-    @JdbcTypeCode(SqlTypes.VARCHAR)
-    private String role;
+    @Column(name="current_submission_no", nullable = false)
+    private Integer currentSubmissionNo = 1;
+
+    @Column(name="status", nullable = false)
+    @NotBlank
+    @NotEmpty
+    @NotNull
+    private String status = "PENDING";
+
+    @CreationTimestamp
+    @Column(name = "published_at")
+    private LocalDateTime publishedAt;
+
+    @CreationTimestamp
+    @Column(name="withdrawn_at", updatable = false)
+    private LocalDateTime withdrawnAt;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -61,4 +62,9 @@ public class UsersModel {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
+    @Column(name = "version")
+    @NotBlank
+    @NotNull
+    @NotEmpty
+    private int version = 0;
 }
