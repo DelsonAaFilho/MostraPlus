@@ -1,6 +1,7 @@
 package com.example.a3work.Model;
 
-import com.example.a3work.enums.ReviewDecision;
+import com.example.a3work.enums.ProjectEventType;
+import com.example.a3work.enums.ProjectStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -11,23 +12,26 @@ import lombok.ToString;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
 
 import java.time.Instant;
 
+@Entity
+@Table(
+        name = "project_events",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uq_events_type",
+                columnNames = {
+                        "project_id",
+                        "submission_no",
+                        "event_type"
+                }
+        )
+)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity
-@Table(
-        name = "project_reviews",
-        uniqueConstraints = @UniqueConstraint(
-                name = "uq_reviews_submission",
-                columnNames = {"project_id", "submission_no"}
-        )
-)
-
-public class ProjectReviewModel {
-
+public class ProjectEventsModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
@@ -51,7 +55,7 @@ public class ProjectReviewModel {
                     )
             },
             foreignKey = @ForeignKey(
-                    name = "fk_reviews_submission",
+                    name = "fk_events_submission",
                     foreignKeyDefinition = "FOREIGN KEY (project_id, submission_no) REFERENCES project_submissions (project_id, submission_no) ON DELETE RESTRICT ON UPDATE RESTRICT"
             )
     )
@@ -60,15 +64,16 @@ public class ProjectReviewModel {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
-            name = "professor_id",
+            name = "actor_id",
+            referencedColumnName = "id",
             nullable = false,
             updatable = false,
             foreignKey = @ForeignKey(
-                    name = "fk_reviews_professor_user",
-                    foreignKeyDefinition = "FOREIGN KEY (professor_id) REFERENCES users (id) ON DELETE RESTRICT ON UPDATE RESTRICT"
+                    name = "fk_events_actor_user",
+                    foreignKeyDefinition = "FOREIGN KEY (actor_id) REFERENCES users (id) ON DELETE RESTRICT ON UPDATE RESTRICT"
             )
     )
-    private UsersModel professor;
+    private UsersModel actor;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -76,35 +81,49 @@ public class ProjectReviewModel {
             value = {
                     @JoinColumn(name = "project_id", referencedColumnName = "id",
                             insertable = false, updatable = false),
-                    @JoinColumn(name = "professor_id", referencedColumnName = "professor_id",
+                    @JoinColumn(name = "actor_id", referencedColumnName = "author_id",
                             insertable = false, updatable = false)
             },
             foreignKey = @ForeignKey(
-                    name = "fk_reviews_assigned_professor",
-                    foreignKeyDefinition = "FOREIGN KEY (project_id, professor_id) "
-                            + "REFERENCES projects (id, professor_id) ON DELETE RESTRICT ON UPDATE RESTRICT"
+                    name = "fk_events_author",
+                    foreignKeyDefinition = "FOREIGN KEY (project_id, actor_id) "
+                            + "REFERENCES projects (id, author_id) ON DELETE RESTRICT ON UPDATE RESTRICT"
             )
     )
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @Setter(AccessLevel.NONE)
-    private ProjectsModel assignedProject;
+    private ProjectsModel authoredProject;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(
-            name = "decision",
+            name = "event_type",
+            nullable = false,
+            length = 32,
+            updatable = false
+    )
+    private ProjectEventType eventType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "from_status", length = 16, updatable = false)
+    private ProjectStatus fromStatus;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(
+            name = "to_status",
             nullable = false,
             length = 16,
             updatable = false
     )
-    private ReviewDecision decision;
+    private ProjectStatus toStatus;
 
-    @Column(name = "comment", columnDefinition = "text", updatable = false)
-    private String comment;
-
-    @CreationTimestamp
-    @Column(name = "reviewed_at", nullable = false, updatable = false)
-    private Instant reviewedAt;
-
+    @CreationTimestamp(source = SourceType.DB)
+    @Column(
+            name = "occurred_at",
+            nullable = false,
+            updatable = false
+    )
+    private Instant occurredAt;
 }

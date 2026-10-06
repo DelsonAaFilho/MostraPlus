@@ -25,7 +25,7 @@ public class ProjectParticipantsModel {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumns({
+    @JoinColumns(value = {
             @JoinColumn(
                     name = "project_id",
                     referencedColumnName = "project_id",
@@ -36,7 +36,10 @@ public class ProjectParticipantsModel {
                     referencedColumnName = "submission_no",
                     nullable = false
             )
-    })
+    }, foreignKey = @ForeignKey(
+                    name = "fk_participants_submission",
+                    foreignKeyDefinition = "FOREIGN KEY (project_id, submission_no) REFERENCES project_submissions (project_id, submission_no) ON DELETE RESTRICT ON UPDATE RESTRICT"
+            ))
     private ProjectSubmissionsModel submission;
 
     @NotBlank

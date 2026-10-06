@@ -2,18 +2,22 @@
 
 Vitrine pública de projetos acadêmicos com curadoria docente. Visitantes exploram projetos publicados; alunos submetem e acompanham seus trabalhos; professores avaliam os projetos atribuídos a eles.
 
-Este repositório contém a base de uma aplicação Java 21 com Spring Boot e Maven. **As funcionalidades de negócio ainda estão planejadas:** o código atual contém a classe de inicialização, um teste de contexto e a configuração do nome da aplicação. Não há controllers de negócio, entidades, migrations, interface ou integração Brevo implementados.
+Este repositório contém a base de uma aplicação Java 21 com Spring Boot e Maven. **As funcionalidades de negócio ainda estão planejadas:** já existem seis entidades JPA, repositories e cinco arquivos de migration, além da inicialização e do teste de contexto. A sequência de migrations ainda precisa de correção; Flyway está desativado e Hibernate usa `update`. Não há controllers/serviços de negócio, interface ou integração Brevo implementados.
 
 ## Documentação e planejamento
 
 - [Análise de requisitos](docs/Analise_de_Requisitos_Mostra%2B.docx): perfis, regras, RF01–RF40, RNF01–RNF15 e critérios CA01–CA13.
 - [Arquitetura e fluxo](docs/Documento%20de%20Arquitetura%20e%20Fluxo%202%20%281%29.pdf): autorização, armazenamento e ciclo de vida.
-- [Plano de desenvolvimento](docs/PLANEJAMENTO.md): 6 marcos, 26 issues, dependências e critérios de aceite.
-- [Backlog estruturado](docs/planejamento-github.json): conteúdo publicado, com números e links do GitHub.
+- [Backlog técnico atual](docs/BACKLOG_TECNICO.md): 7 marcos, 37 issues, dependências, testes e critérios de aceite.
+- [Plano histórico e revisão](docs/PLANEJAMENTO.md): decisões e rastreabilidade da evolução do planejamento.
+- [Backlog técnico estruturado](docs/backlog-tecnico.json) e [recibo da publicação](docs/backlog-tecnico-publicacao.json): conteúdo verificado, números e links reais.
+- [Snapshot da primeira publicação](docs/planejamento-github.json): referência histórica. A pasta `docs/` é local e permanece ignorada no Git; use os links do GitHub para consultar o backlog remotamente.
 - [Guia para agentes e contribuidores](AGENTS.md).
 - [Issues no GitHub](https://github.com/DelsonAaFilho/A3_Web/issues) e [milestones](https://github.com/DelsonAaFilho/A3_Web/milestones).
 
-O planejamento está publicado no GitHub: **6 milestones e 26 issues**, com dependências e critérios de aceite. O plano relaciona cada identificador local ao número e link da issue correspondente.
+O planejamento técnico foi publicado e verificado no GitHub em 06/10/2026: **7 milestones, 37 issues (33 técnicas e 4 decisões) e 26 labels gerenciadas**. Os números anteriores foram preservados e 11 issues foram acrescentadas. A decisão #1 segue encerrada; as políticas complementares estão na #27. As issues contêm referências, dependências e critérios de aceite/testes. Labels de fluxo são recalculadas pela sincronização manual, sem automação contínua instalada.
+
+A ordem de execução aparece nos títulos das issues, de `[01]` a `[36]`: primeiro os pré-requisitos técnicos e, entre tarefas liberadas, a menor dificuldade. Os milestones agrupam entregas e podem ser trabalhados em paralelo quando as dependências permitirem.
 
 ## Perfis e funcionalidades previstas
 

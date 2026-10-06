@@ -26,11 +26,25 @@ public class ProjectSubmissionsModel {
 
     @MapsId("projectId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "project_id", nullable = false)
+    @JoinColumn(
+            name = "project_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    name = "fk_submissions_project",
+                    foreignKeyDefinition = "FOREIGN KEY (project_id) REFERENCES projects (id) ON DELETE RESTRICT ON UPDATE RESTRICT"
+            )
+    )
     private ProjectsModel project;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(
+            name = "category_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    name = "fk_submissions_category",
+                    foreignKeyDefinition = "FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE RESTRICT ON UPDATE RESTRICT"
+            )
+    )
     private CategoriesModel category;
 
     @Column(name = "title", nullable = false)

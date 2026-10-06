@@ -15,7 +15,13 @@ import java.util.UUID;
 
 
 @Entity
-@Table(name = "projects")
+@Table(
+        name = "projects",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uq_projects_author", columnNames = {"id", "author_id"}),
+                @UniqueConstraint(name = "uq_projects_professor", columnNames = {"id", "professor_id"})
+        }
+)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -37,15 +43,49 @@ public class ProjectsModel {
     }
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="author_id", nullable = false)
+    @JoinColumn(
+            name = "author_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    name = "fk_projects_author",
+                    foreignKeyDefinition = "FOREIGN KEY (author_id) REFERENCES users (id) ON DELETE RESTRICT ON UPDATE RESTRICT"
+            )
+    )
     private UsersModel author;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="professor_id", nullable = false)
+    @JoinColumn(
+            name = "professor_id",
+            nullable = false,
+            foreignKey = @ForeignKey(
+                    name = "fk_projects_professor",
+                    foreignKeyDefinition = "FOREIGN KEY (professor_id) REFERENCES users (id) ON DELETE RESTRICT ON UPDATE RESTRICT"
+            )
+    )
     private UsersModel professor;
 
     @Column(name="current_submission_no", nullable = false)
     private Integer currentSubmissionNo = 1;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns(
+            value = {
+                    @JoinColumn(name = "id", referencedColumnName = "project_id",
+                            insertable = false, updatable = false),
+                    @JoinColumn(name = "current_submission_no", referencedColumnName = "submission_no",
+                            insertable = false, updatable = false)
+            },
+            foreignKey = @ForeignKey(
+                    name = "fk_projects_current_submission",
+                    foreignKeyDefinition = "FOREIGN KEY (id, current_submission_no) "
+                            + "REFERENCES project_submissions (project_id, submission_no) "
+                            + "ON DELETE NO ACTION ON UPDATE RESTRICT DEFERRABLE INITIALLY DEFERRED"
+            )
+    )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @Setter(AccessLevel.NONE)
+    private ProjectSubmissionsModel currentSubmission;
 
     @Column(name="status", nullable = false)
     @NotBlank
