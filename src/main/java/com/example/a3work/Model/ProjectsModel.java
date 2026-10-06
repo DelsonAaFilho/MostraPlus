@@ -55,7 +55,7 @@ public class ProjectsModel {
             )
     )
     private UsersModel professor;
-    // A FK composta, diferida, é criada pela migration V4.
+
     @Column(name = "current_submission_no", nullable = false)
     private Integer currentSubmissionNo = 1;
     @Column(name = "status", nullable = false)

@@ -33,7 +33,7 @@ public class ProjectEventsModel {
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
-    // A FK composta que garante o autor do projeto é criada pela migration V5.
+
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumns(
