@@ -21,21 +21,27 @@ import java.util.UUID;
 
 public class ProjectsModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false, updatable = false)
-    private UUID id;
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name="id", nullable = false, updatable = false)
+    private Long id;
 
-    @Column(name="author_id", nullable = false)
-    @NotBlank
-    @NotEmpty
-    @NotNull
-    private String authorId;
+    @Column(name = "external_id", nullable = false, updatable = false)
+    private UUID externalId;
 
-    @Column(name="professor_id", nullable = false)
-    @NotBlank
-    @NotEmpty
-    @NotNull
-    private String professorId;
+    @PrePersist
+    protected void assignExternalId() {
+        if (externalId == null) {
+            externalId = UUID.randomUUID();
+        }
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="author_id", nullable = false)
+    private UsersModel author;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="professor_id", nullable = false)
+    private UsersModel professor;
 
     @Column(name="current_submission_no", nullable = false)
     private Integer currentSubmissionNo = 1;

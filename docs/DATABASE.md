@@ -1,6 +1,6 @@
 # Modelo de banco de dados — Mostra+
 
-**Status:** proposta técnica, elaborada em 05/10/2026. O projeto ainda não possui entidades de negócio nem migrations. Este documento especifica o modelo; o SQL abaixo não foi instalado no banco da aplicação.
+**Status:** proposta técnica, elaborada em 05/10/2026. Durante a elaboração, foram adicionados modelos JPA iniciais ao projeto; ainda não há migrations de negócio. Este documento especifica o modelo proposto; o SQL abaixo não foi instalado no banco da aplicação e não deve ser aplicado sobre tabelas existentes sem uma migration de compatibilização.
 
 ## 1. Escopo e fontes
 
@@ -14,6 +14,8 @@ Fontes de negócio:
 - [Diretrizes do repositório](../AGENTS.md).
 
 Há **8 tabelas de domínio**. Visitante é uma condição de acesso sem autenticação, portanto não é uma conta nem uma tabela. Participantes são nomes informados no projeto, sem exigência de cadastro. Logo e imagens ficam no storage; o banco guarda suas referências.
+
+Atualização solicitada pelo responsável em 05/10/2026: adotar **até 10 participantes por projeto**, mantendo o mínimo de 1 dos requisitos originais. Cada versão submetida armazena sua própria lista de 1 a 10 nomes. O limite foi registrado no planejamento local; os documentos originais permanecem preservados.
 
 ### Decisões técnicas propostas e pendências
 
@@ -74,7 +76,7 @@ erDiagram
     categories ||--o{ project_submissions : "category_id"
     projects ||--|{ project_submissions : "possui versões"
     projects ||--|| project_submissions : "aponta versão atual"
-    project_submissions ||--|{ project_participants : "participantes"
+    project_submissions ||--|{ project_participants : "1 a 10 participantes"
     project_submissions ||--o{ project_media : "zero a quatro mídias"
     project_submissions ||--o| project_reviews : "zero ou uma avaliação"
     project_submissions ||--|{ project_events : "envio e eventual retirada"
@@ -123,6 +125,8 @@ A normalização do e-mail é uma proposta de identificação de conta e deve se
 
 O seed resolve IDs automaticamente. Referenciar categorias por ID nas FKs e pelo código quando uma migration precisar localizá-las; não depender de IDs numéricos fixos. Não há CRUD público de categorias previsto.
 
+A carga pode ser automática por migration Flyway. Se for feita a partir de `categoriesEnum.values()` por um inicializador Java, o enum precisa fornecer nome pt-BR e ordem explícita, e o processo deve evitar duplicação por `code`. Escolher um único responsável pela carga. `@Enumerated(EnumType.STRING)` mapeia o valor da coluna, mas não insere os nove registros. Não usar `ordinal()` como ID nem como ordem durável; consultar com `ORDER BY sort_order`. No enum inicial do código, `ACESSIBILITY` difere do código proposto `ACCESSIBILITY`; alinhar antes da carga ou migrar dados existentes ao corrigir.
+
 ### 4.3. `projects` — identidade, responsáveis e estado atual
 
 | Coluna | Tipo SQL | Nulo? | Default | Chaves e regra |
@@ -170,9 +174,9 @@ Versões já enviadas não recebem `UPDATE` no fluxo normal. Cada revisão copia
 | `project_id` | `bigint` | Não | — | FK composta com `submission_no`. |
 | `submission_no` | `integer` | Não | — | FK → `project_submissions`. |
 | `name` | `varchar(150)` | Não | — | Nome não vazio. |
-| `position` | `integer` | Não | — | Positivo; UQ por versão. |
+| `position` | `integer` | Não | — | De 1 a 10; UQ por versão. |
 
-Exigir pelo menos um participante no serviço antes do commit. Nomes iguais não são proibidos: pessoas diferentes podem ter o mesmo nome. Não existe `user_id`, pois a fonte exige lista de nomes, não coautoria com contas. Estar nesta lista não concede permissão de edição.
+Exigir de 1 a 10 participantes no serviço antes do commit. O `CHECK` de posições entre 1 e 10, combinado à UQ por versão, também impede um 11º participante no banco. O mínimo de um continua sendo validado pelo serviço. Nomes iguais não são proibidos: pessoas diferentes podem ter o mesmo nome. Não existe `user_id`, pois a fonte exige lista de nomes, não coautoria com contas. Estar nesta lista não concede permissão de edição.
 
 ### 4.6. `project_media` — logo e imagens por versão
 
@@ -290,7 +294,7 @@ O DDL da seção 10 implementa PKs, FKs, UQs, limites de coluna e `CHECK`s locai
 | Ator de envio/retirada é o autor | FK composta. | Derivar ator da autenticação, nunca aceitar autoridade do payload. |
 | Uma avaliação por versão | UQ. | Exigir versão atual pendente e impedir avaliação de versão antiga. |
 | Comentário na reprovação | `CHECK` não vazio. | Mensagem de validação em pt-BR. |
-| Pelo menos um participante | Não garantido por FK/`CHECK` simples. | Validar coleção na mesma transação antes de persistir/commit. |
+| De 1 a 10 participantes | Posições de 1 a 10 e UQ garantem o máximo; o mínimo não é garantido por FK/`CHECK` simples. | Validar coleção com `@Size(min = 1, max = 10)` e conferir na mesma transação antes de persistir/commit. |
 | Máximo de 3 imagens e 1 logo | Slots permitidos e UQ por versão. | Verificar arquivo real, autorização e integridade no storage. |
 | URLs e contato válidos | Campos obrigatórios não vazios. | Validar e-mail, esquemas HTTP(S), URLs opcionais e rejeitar link direto de executável. |
 | Estado coerente com avaliação/histórico | `CHECK`s locais de status e timestamps. | Atualizar tudo atomicamente, sem alterar estado por CRUD genérico. |
@@ -504,7 +508,7 @@ CREATE TABLE project_participants (
     project_id bigint NOT NULL,
     submission_no integer NOT NULL,
     name varchar(150) NOT NULL CHECK (name ~ '[^[:space:]]'),
-    position integer NOT NULL CHECK (position > 0),
+    position integer NOT NULL CHECK (position BETWEEN 1 AND 10),
     CONSTRAINT fk_participants_submission FOREIGN KEY (project_id, submission_no)
         REFERENCES project_submissions (project_id, submission_no)
         ON DELETE RESTRICT ON UPDATE RESTRICT,
@@ -630,7 +634,9 @@ Ordem sugerida para a implementação futura:
 
 O bloco de referência é transacional para validação manual; ao dividi-lo em migrations Flyway, deixar o Flyway administrar as transações. Nunca alterar uma migration já aplicada em ambiente compartilhado. O Flyway cria sua própria tabela técnica `flyway_schema_history`, que não é entidade de domínio e não deve ser criada pelo SQL acima.
 
-O caminho convencionado em `AGENTS.md` é `src/main/resources/db/migration/`, mas a configuração atual aponta para `classpath:db/migrations` (plural). Alinhar configuração e diretório quando as migrations forem implementadas. Manter `spring.jpa.hibernate.ddl-auto=validate`; as entidades devem corresponder às migrations.
+O caminho convencionado em `AGENTS.md` é `src/main/resources/db/migration/`. A linha de configuração com `classpath:db/migrations` (plural) está atualmente comentada; se for reativada, alinhar o diretório. Para adotar este modelo com Flyway, usar `spring.jpa.hibernate.ddl-auto=validate`; a configuração local atual usa `update`. As entidades devem corresponder às migrations.
+
+Os modelos iniciais em desenvolvimento ainda diferem desta proposta: usuários e projetos usam UUID, enquanto categorias usam `Integer` com geração por sequence. O DDL documentado usa `bigint` com identity. Antes de criar migrations, escolher e alinhar os tipos de PK/FK, a geração de IDs, os nomes e as validações de coluna. Este documento não converte automaticamente os modelos existentes.
 
 Nenhuma tabela adicional de sessão, refresh token, recuperação de senha ou outbox faz parte desta proposta. Caso DEC-02 escolha Spring Session JDBC, usar o schema da biblioteca na versão efetivamente adotada. Caso DEC-03 escolha outbox, documentar depois eventos, payload mínimo, chave de deduplicação, tentativas e retenção; não antecipar destinatários ou eventos de e-mail.
 
@@ -640,7 +646,7 @@ Backups precisam abranger o banco e os objetos referenciados no storage. A limpe
 
 - Criar schema vazio com Flyway e conferir o mapeamento JPA em PostgreSQL isolado.
 - Confirmar unicidade de e-mail, nove categorias e rejeição de referências inexistentes.
-- Submeter com um participante e sem mídias; rejeitar zero participantes no serviço.
+- Submeter com 1 e com 10 participantes; rejeitar zero no serviço e um 11º participante no serviço e no banco. Validar posições duplicadas.
 - Rejeitar descrição de 501 caracteres, quarta imagem, segundo logo, arquivo inválido e tamanho excedido.
 - Rejeitar avaliação por professor diferente, ator diferente do autor e reprovação com comentário `NULL`, vazio ou só espaços.
 - Garantir uma decisão por versão, preservar avaliações anteriores e vincular reenvio ao mesmo professor.
@@ -650,13 +656,14 @@ Backups precisam abranger o banco e os objetos referenciados no storage. A limpe
 - Verificar que senha/hash, caminhos de storage, ciência e histórico não aparecem em DTOs públicos.
 - Testar falhas parciais de upload e reutilização de objetos entre versões sem exclusão prematura.
 
-Esta especificação não conclui TEC-02: entidades, migrations, serviços, testes de integração e decisões pendentes continuam sendo trabalho de implementação.
+Esta especificação não conclui TEC-02: completar e compatibilizar entidades, criar migrations/serviços, realizar testes de integração e resolver decisões pendentes continuam sendo trabalho de implementação.
 
 ### Verificação desta proposta em 05/10/2026
 
 - O DDL foi executado com sucesso em um cluster PostgreSQL 18.6 temporário e isolado, em modo single-user, sem acessar o banco da aplicação. Essa validação não fixa a versão de PostgreSQL da entrega.
 - Foram conferidas 8 tabelas, 65 colunas, 11 FKs e 9 categorias. Os nomes e a ordem das colunas foram comparados ao dicionário deste documento; o exemplo JSON e os links locais também foram verificados.
 - O banco rejeitou 15 casos inválidos: e-mail duplicado, e-mail não normalizado, projeto sem versão atual, categoria inexistente, descrição de 501 caracteres, quarta imagem, segundo logo, arquivo acima do limite, MIME não permitido, professor diferente do atribuído, reprovação sem comentário, comentário só com espaços, segunda avaliação da mesma versão, evento de outro autor e reenvio com origem nula.
+- Após o ajuste solicitado de participantes, o DDL atualizado foi executado novamente em um cluster isolado: aceitou 1 e 10 participantes e rejeitou tanto o 11º participante quanto uma posição duplicada. O mínimo continua dependendo da validação do serviço.
 - O roteiro SQL de submissão, reprovação, reenvio, aprovação e retirada preservou duas avaliações e três eventos; o predicado público deixou de retornar o projeto após a retirada. Isso valida o esquema e as gravações do roteiro, não serviços ainda inexistentes.
 - O teste Maven foi executado em modo offline, com datasource explicitamente direcionado a um endereço local reservado para esta verificação. O teste de contexto falhou com `java.net.SocketException: Operation not permitted`, pois o ambiente bloqueia sockets. Nenhuma configuração de segurança, Flyway ou teste foi desativada para contornar a falha.
 - As regras atribuídas à camada de serviço, o mapeamento JPA, o acesso HTTP/storage e a concorrência real continuam sem validação de integração, pois não foram implementados nesta tarefa documental.

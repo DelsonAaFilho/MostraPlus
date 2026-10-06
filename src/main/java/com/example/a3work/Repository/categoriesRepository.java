@@ -5,6 +5,6 @@ import com.example.a3work.Model.categoriesModel;
 
 
 
-public interface categoriesRepository extends JpaRepository<categoriesModel, Integer>{
+public interface categoriesRepository extends JpaRepository<categoriesModel, Long>{
 
 }

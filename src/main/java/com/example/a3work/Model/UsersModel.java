@@ -23,10 +23,19 @@ public class UsersModel {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, updatable = false)
-    private UUID id;
+    private Long id;
 
+    @Column(name = "external_id", nullable = false, updatable = false)
+    private UUID externalId;
+
+    @PrePersist
+    protected void assignExternalId() {
+        if (externalId == null) {
+            externalId = UUID.randomUUID();
+        }
+    }
     @Column(name = "name", nullable = false)
     @JdbcTypeCode(SqlTypes.VARCHAR)
     @NonNull

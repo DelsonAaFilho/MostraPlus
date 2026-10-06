@@ -10,6 +10,12 @@ Os marcos indicam ordem de entrega, sem datas, responsáveis ou estimativas inve
 
 Prioridade é da entrega agrupada: requisitos Importantes ou Desejáveis são identificados no corpo quando coexistem com Essenciais. A integração Brevo é exigência adicional da stack; eventos aguardam decisão.
 
+### Atualização local de modelagem — 05/10/2026
+
+Por orientação do responsável nesta sessão, o modelo adota **de 1 a 10 participantes por projeto**: mantém o mínimo original e acrescenta o máximo solicitado. A especificação está em [DATABASE.md](DATABASE.md), incluindo tabelas, colunas, chaves, versionamento dos envios e serialização. Trata-se de proposta de modelo, sem entidades ou migrations de negócio implementadas nesta tarefa.
+
+O limite afeta TEC-02, PROJ-02 e UI-03. Validar a coleção no servidor e o máximo no banco; a interface deve impedir adicionar o 11º participante. Esta atualização é local: as issues do GitHub e o arquivo de registro da publicação ainda não foram sincronizados com esta nova regra.
+
 ## Marcos e critérios de saída
 
 ### M1 — Requisitos e decisões de arquitetura
@@ -149,6 +155,7 @@ Critérios de aceite:
 
 - [ ] Migrations criam banco vazio; reaplicação do Flyway não altera migrations executadas.
 - [ ] Garantir e-mail único, relacionamentos e integridade referencial.
+- [ ] Modelar de 1 a 10 participantes por projeto/versão, garantindo o máximo no banco e o mínimo no serviço.
 - [ ] Carregar as nove categorias documentadas sem duplicatas.
 - [ ] Persistir histórico sem sobrescrever reprovações; separar URLs/chaves de storage dos binários.
 - [ ] Usar isolamento transacional e estratégia de concorrência para transições de estado.
@@ -241,7 +248,7 @@ Criar projeto pelo aluno autenticado, com participantes, professor, categoria, c
 
 Critérios de aceite:
 
-- [ ] Título obrigatório com até 100 caracteres, descrição até 500 e ao menos um participante.
+- [ ] Título obrigatório com até 100 caracteres, descrição até 500 e de 1 a 10 participantes.
 - [ ] Exigir categoria, link de site, e-mail de contato e professor; LinkedIn/GitHub são opcionais e validados quando presentes.
 - [ ] Para aplicativos, aceitar página de download e rejeitar link direto de executável conforme política validada.
 - [ ] Autoria vem da autenticação; status inicial Pendente e confirmação de envio.
@@ -413,7 +420,7 @@ Integrar formulário, status, comentários, edição/reenvio e retirada. Informa
 
 Critérios de aceite:
 
-- [ ] Formulário cobre campos obrigatórios/opcionais, participantes, categorias, professor e limites de upload.
+- [ ] Formulário cobre campos obrigatórios/opcionais, de 1 a 10 participantes, categorias, professor e limites de upload.
 - [ ] Exibir validações e contador de descrição (RF18 Desejável), sem depender do frontend para impor o limite obrigatório.
 - [ ] Perfil exibe projetos por status, atalho Novo projeto, comentários e ações permitidas.
 - [ ] Registrar ciência antes da submissão; LinkedIn/GitHub continuam opcionais.

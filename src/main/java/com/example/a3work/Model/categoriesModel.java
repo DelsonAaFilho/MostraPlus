@@ -1,5 +1,4 @@
 package com.example.a3work.Model;
-import com.example.a3work.enums.categoriesEnum;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -20,16 +19,15 @@ import java.util.UUID;
 public class categoriesModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id", nullable=false, updatable=false)
-    private Integer id ;
+    private Long id ;
 
     @Column(name="code", nullable=false, unique=true)
     @NotBlank
     @NotNull
     @NotEmpty
-    @Enumerated(EnumType.STRING)
-    private categoriesEnum code;
+    private String code;
 
     @Column(name="name", nullable=false, unique=true)
     @NotBlank
@@ -38,7 +36,7 @@ public class categoriesModel {
     private String name;
 
     @Column(name="sort_order", nullable=false)
-    private Integer sort_order;
+    private Short sort_order;
 
 
 
