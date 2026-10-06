@@ -64,28 +64,9 @@ public class ProjectsModel {
     )
     private UsersModel professor;
 
+    // A FK composta, diferida, é criada pela migration V4.
     @Column(name="current_submission_no", nullable = false)
     private Integer currentSubmissionNo = 1;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns(
-            value = {
-                    @JoinColumn(name = "id", referencedColumnName = "project_id",
-                            insertable = false, updatable = false),
-                    @JoinColumn(name = "current_submission_no", referencedColumnName = "submission_no",
-                            insertable = false, updatable = false)
-            },
-            foreignKey = @ForeignKey(
-                    name = "fk_projects_current_submission",
-                    foreignKeyDefinition = "FOREIGN KEY (id, current_submission_no) "
-                            + "REFERENCES project_submissions (project_id, submission_no) "
-                            + "ON DELETE NO ACTION ON UPDATE RESTRICT DEFERRABLE INITIALLY DEFERRED"
-            )
-    )
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @Setter(AccessLevel.NONE)
-    private ProjectSubmissionsModel currentSubmission;
 
     @Column(name="status", nullable = false)
     @NotBlank

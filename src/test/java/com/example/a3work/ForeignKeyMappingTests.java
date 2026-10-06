@@ -41,17 +41,14 @@ class ForeignKeyMappingTests {
             String sql = ddl.toString().toLowerCase(Locale.ROOT).replaceAll("\\s+", " ");
             assertTrue(sql.contains("constraint uq_projects_author unique (id, author_id)"), sql);
             assertTrue(sql.contains("constraint uq_projects_professor unique (id, professor_id)"), sql);
-            assertTrue(sql.contains("constraint fk_projects_current_submission foreign key (id, current_submission_no) "
-                    + "references project_submissions (project_id, submission_no) on delete no action "
-                    + "on update restrict deferrable initially deferred"), sql);
-            assertTrue(sql.contains("constraint fk_reviews_assigned_professor foreign key (project_id, professor_id) "
-                    + "references projects (id, professor_id) on delete restrict on update restrict"), sql);
-            assertTrue(sql.contains("constraint fk_events_author foreign key (project_id, actor_id) "
-                    + "references projects (id, author_id) on delete restrict on update restrict"), sql);
             for (String table : new String[]{"participants", "reviews", "events"}) {
                 assertTrue(sql.contains("constraint fk_" + table + "_submission foreign key (project_id, submission_no) "
                         + "references project_submissions (project_id, submission_no) on delete restrict on update restrict"), sql);
             }
+            assertTrue(sql.contains("constraint fk_reviews_professor_user foreign key (professor_id) "
+                    + "references users (id) on delete restrict on update restrict"), sql);
+            assertTrue(sql.contains("constraint fk_events_actor_user foreign key (actor_id) "
+                    + "references users (id) on delete restrict on update restrict"), sql);
         }
     }
 }

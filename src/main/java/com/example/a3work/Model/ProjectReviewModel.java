@@ -3,11 +3,7 @@ package com.example.a3work.Model;
 import com.example.a3work.enums.ReviewDecision;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -33,6 +29,7 @@ public class ProjectReviewModel {
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
+    // A FK composta ao professor atribuído é criada pela migration V5.
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumns(
@@ -69,27 +66,6 @@ public class ProjectReviewModel {
             )
     )
     private UsersModel professor;
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns(
-            value = {
-                    @JoinColumn(name = "project_id", referencedColumnName = "id",
-                            insertable = false, updatable = false),
-                    @JoinColumn(name = "professor_id", referencedColumnName = "professor_id",
-                            insertable = false, updatable = false)
-            },
-            foreignKey = @ForeignKey(
-                    name = "fk_reviews_assigned_professor",
-                    foreignKeyDefinition = "FOREIGN KEY (project_id, professor_id) "
-                            + "REFERENCES projects (id, professor_id) ON DELETE RESTRICT ON UPDATE RESTRICT"
-            )
-    )
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @Setter(AccessLevel.NONE)
-    private ProjectsModel assignedProject;
-
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(

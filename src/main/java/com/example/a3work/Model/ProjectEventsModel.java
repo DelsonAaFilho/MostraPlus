@@ -4,11 +4,7 @@ import com.example.a3work.enums.ProjectEventType;
 import com.example.a3work.enums.ProjectStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -37,6 +33,7 @@ public class ProjectEventsModel {
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
+    // A FK composta que garante o autor do projeto é criada pela migration V5.
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumns(
@@ -74,27 +71,6 @@ public class ProjectEventsModel {
             )
     )
     private UsersModel actor;
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns(
-            value = {
-                    @JoinColumn(name = "project_id", referencedColumnName = "id",
-                            insertable = false, updatable = false),
-                    @JoinColumn(name = "actor_id", referencedColumnName = "author_id",
-                            insertable = false, updatable = false)
-            },
-            foreignKey = @ForeignKey(
-                    name = "fk_events_author",
-                    foreignKeyDefinition = "FOREIGN KEY (project_id, actor_id) "
-                            + "REFERENCES projects (id, author_id) ON DELETE RESTRICT ON UPDATE RESTRICT"
-            )
-    )
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @Setter(AccessLevel.NONE)
-    private ProjectsModel authoredProject;
-
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(
