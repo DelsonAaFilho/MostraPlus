@@ -1,12 +1,6 @@
 package com.example.a3work;
 
-import com.example.a3work.Model.CategoriesModel;
-import com.example.a3work.Model.ProjectEventsModel;
-import com.example.a3work.Model.ProjectParticipantsModel;
-import com.example.a3work.Model.ProjectReviewModel;
-import com.example.a3work.Model.ProjectSubmissionsModel;
-import com.example.a3work.Model.ProjectsModel;
-import com.example.a3work.Model.UsersModel;
+import com.example.a3work.Model.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.Test;

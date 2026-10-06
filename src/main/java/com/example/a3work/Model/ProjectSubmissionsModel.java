@@ -75,7 +75,7 @@ public class ProjectSubmissionsModel {
     @URL(message = "Invalid URL format")
     private String url;
 
-    @Column(name= "contact_email", nullable = false)
+    @Column(name = "contact_email", nullable = false)
     @Email
     @NotBlank
     @NotNull

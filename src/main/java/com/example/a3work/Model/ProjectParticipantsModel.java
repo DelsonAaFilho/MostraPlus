@@ -37,9 +37,9 @@ public class ProjectParticipantsModel {
                     nullable = false
             )
     }, foreignKey = @ForeignKey(
-                    name = "fk_participants_submission",
-                    foreignKeyDefinition = "FOREIGN KEY (project_id, submission_no) REFERENCES project_submissions (project_id, submission_no) ON DELETE RESTRICT ON UPDATE RESTRICT"
-            ))
+            name = "fk_participants_submission",
+            foreignKeyDefinition = "FOREIGN KEY (project_id, submission_no) REFERENCES project_submissions (project_id, submission_no) ON DELETE RESTRICT ON UPDATE RESTRICT"
+    ))
     private ProjectSubmissionsModel submission;
 
     @NotBlank

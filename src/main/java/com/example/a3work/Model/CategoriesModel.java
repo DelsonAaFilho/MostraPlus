@@ -18,24 +18,23 @@ public class CategoriesModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id", nullable=false, updatable=false)
-    private Long id ;
+    @Column(name = "id", nullable = false, updatable = false)
+    private Long id;
 
-    @Column(name="code", nullable=false, unique=true)
+    @Column(name = "code", nullable = false, unique = true)
     @NotBlank
     @NotNull
     @NotEmpty
     private String code;
 
-    @Column(name="name", nullable=false, unique=true)
+    @Column(name = "name", nullable = false, unique = true)
     @NotBlank
     @NotEmpty
     @NotNull
     private String name;
 
-    @Column(name="sort_order", nullable=false)
+    @Column(name = "sort_order", nullable = false)
     private Short sort_order;
-
 
 
 }

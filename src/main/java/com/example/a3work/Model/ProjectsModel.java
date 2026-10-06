@@ -5,10 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -28,20 +29,12 @@ import java.util.UUID;
 
 public class ProjectsModel {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name="id", nullable = false, updatable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
     @Column(name = "external_id", nullable = false, updatable = false)
     private UUID externalId;
-
-    @PrePersist
-    protected void assignExternalId() {
-        if (externalId == null) {
-            externalId = UUID.randomUUID();
-        }
-    }
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
             name = "author_id",
@@ -52,7 +45,6 @@ public class ProjectsModel {
             )
     )
     private UsersModel author;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
             name = "professor_id",
@@ -63,37 +55,37 @@ public class ProjectsModel {
             )
     )
     private UsersModel professor;
-
     // A FK composta, diferida, é criada pela migration V4.
-    @Column(name="current_submission_no", nullable = false)
+    @Column(name = "current_submission_no", nullable = false)
     private Integer currentSubmissionNo = 1;
-
-    @Column(name="status", nullable = false)
+    @Column(name = "status", nullable = false)
     @NotBlank
     @NotEmpty
     @NotNull
     private String status = "PENDING";
-
     @CreationTimestamp
     @Column(name = "published_at")
     private LocalDateTime publishedAt;
-
     @CreationTimestamp
-    @Column(name="withdrawn_at", updatable = false)
+    @Column(name = "withdrawn_at", updatable = false)
     private LocalDateTime withdrawnAt;
-
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
-
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
-
     @Column(name = "version")
     @NotBlank
     @NotNull
 
     @PositiveOrZero
     private int version = 0;
+
+    @PrePersist
+    protected void assignExternalId() {
+        if (externalId == null) {
+            externalId = UUID.randomUUID();
+        }
+    }
 }
