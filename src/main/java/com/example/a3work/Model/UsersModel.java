@@ -1,6 +1,7 @@
 package com.example.a3work.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -48,6 +49,7 @@ public class UsersModel {
     @NonNull
     @NotEmpty
     @NotBlank
+    @Email
     private String email;
 
     @Column(name = "password", nullable = false)

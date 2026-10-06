@@ -8,15 +8,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Entity
 @Table(name = "categories")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 
-public class categoriesModel {
+public class CategoriesModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
