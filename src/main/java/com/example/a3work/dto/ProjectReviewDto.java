@@ -1,4 +1,4 @@
-package com.example.a3work.DTO;
+package com.example.a3work.dto;
 
 import com.example.a3work.enums.ReviewDecision;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.time.Instant;
 
 /**
- * DTO for {@link com.example.a3work.Model.ProjectReviewModel}
+ * DTO for {@link com.example.a3work.model.ProjectReviewModel}
  */
 @Data
 @AllArgsConstructor

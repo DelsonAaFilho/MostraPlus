@@ -1,6 +1,6 @@
-package com.example.a3work.Repository;
+package com.example.a3work.repository;
 
-import com.example.a3work.Model.ProjectReviewModel;
+import com.example.a3work.model.ProjectReviewModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProjectReview extends JpaRepository<ProjectReviewModel, Long> {

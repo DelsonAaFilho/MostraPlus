@@ -1,4 +1,4 @@
-package com.example.a3work.DTO;
+package com.example.a3work.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * DTO for {@link com.example.a3work.Model.ProjectParticipantsModel}
+ * DTO for {@link com.example.a3work.model.ProjectParticipantsModel}
  */
 @Data
 @AllArgsConstructor

@@ -1,6 +1,6 @@
 package com.example.a3work;
 
-import com.example.a3work.Model.*;
+import com.example.a3work.model.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.Test;

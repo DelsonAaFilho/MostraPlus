@@ -1,4 +1,4 @@
-package com.example.a3work.Model;
+package com.example.a3work.model;
 
 import com.example.a3work.enums.ReviewDecision;
 import jakarta.persistence.*;

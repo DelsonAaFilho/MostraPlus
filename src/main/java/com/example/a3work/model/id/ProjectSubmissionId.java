@@ -1,4 +1,4 @@
-package com.example.a3work.Model.id;
+package com.example.a3work.model.id;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

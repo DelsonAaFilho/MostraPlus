@@ -1,4 +1,4 @@
-package com.example.a3work.Model;
+package com.example.a3work.model;
 
 import com.example.a3work.enums.ProjectEventType;
 import com.example.a3work.enums.ProjectStatus;
@@ -33,7 +33,7 @@ public class ProjectEventsModel {
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
-
+    
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumns(

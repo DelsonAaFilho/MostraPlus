@@ -1,6 +1,6 @@
-package com.example.a3work.Repository;
+package com.example.a3work.repository;
 
-import com.example.a3work.Model.UsersModel;
+import com.example.a3work.model.UsersModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<UsersModel, Long> {

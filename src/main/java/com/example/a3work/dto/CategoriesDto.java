@@ -1,4 +1,4 @@
-package com.example.a3work.DTO;
+package com.example.a3work.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * DTO for {@link com.example.a3work.Model.CategoriesModel}
+ * DTO for {@link com.example.a3work.model.CategoriesModel}
  */
 @Data
 @AllArgsConstructor

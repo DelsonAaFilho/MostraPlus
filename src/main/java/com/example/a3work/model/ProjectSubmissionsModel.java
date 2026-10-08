@@ -1,7 +1,7 @@
-package com.example.a3work.Model;
+package com.example.a3work.model;
 
 
-import com.example.a3work.Model.id.ProjectSubmissionId;
+import com.example.a3work.model.id.ProjectSubmissionId;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

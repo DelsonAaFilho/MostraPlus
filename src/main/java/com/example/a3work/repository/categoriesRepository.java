@@ -1,6 +1,6 @@
-package com.example.a3work.Repository;
+package com.example.a3work.repository;
 
-import com.example.a3work.Model.CategoriesModel;
+import com.example.a3work.model.CategoriesModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

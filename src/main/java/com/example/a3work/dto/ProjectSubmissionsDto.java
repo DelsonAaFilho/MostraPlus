@@ -1,4 +1,4 @@
-package com.example.a3work.DTO;
+package com.example.a3work.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 
 /**
- * DTO for {@link com.example.a3work.Model.ProjectSubmissionsModel}
+ * DTO for {@link com.example.a3work.model.ProjectSubmissionsModel}
  */
 @Data
 @AllArgsConstructor

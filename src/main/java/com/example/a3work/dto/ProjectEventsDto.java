@@ -1,4 +1,4 @@
-package com.example.a3work.DTO;
+package com.example.a3work.dto;
 
 import com.example.a3work.enums.ProjectEventType;
 import com.example.a3work.enums.ProjectStatus;
@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.time.Instant;
 
 /**
- * DTO for {@link com.example.a3work.Model.ProjectEventsModel}
+ * DTO for {@link com.example.a3work.model.ProjectEventsModel}
  */
 @Data
 @AllArgsConstructor
