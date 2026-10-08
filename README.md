@@ -38,5 +38,4 @@ lógica e retenção de dados ainda precisa de decisão.
 | Brevo                                   | Serviço de envio de e-mail escolhido; integração e eventos ainda serão definidos. REST client já consta no POM. |
 
 
-## Execução local
 
