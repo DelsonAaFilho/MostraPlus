@@ -1,7 +1,7 @@
 # Mostra+
 
 Vitrine pública de projetos acadêmicos com curadoria docente. Visitantes exploram projetos publicados; alunos submetem e
-acompanham seus trabalhos; professores avaliam os projetos atribuídos a eles.
+acompanham seus trabalhos; professores avaliam os projetos atribuídos a eles
 
 Este repositório contém a base de uma aplicação Java 21 com Spring Boot e Maven. **As funcionalidades de negócio ainda
 estão planejadas:** 
